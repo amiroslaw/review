@@ -2,6 +2,8 @@ package xyz.miroslaw.review.controller;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
+import xyz.miroslaw.review.model.Category;
+import xyz.miroslaw.review.repository.CategoryRepository;
 import xyz.miroslaw.review.repository.ObjectiveRepository;
 import xyz.miroslaw.review.model.Objective;
 
@@ -12,9 +14,11 @@ import java.util.List;
 public class ObjectiveController {
 
     private ObjectiveRepository objectiveRepository;
+    private CategoryRepository categoryRepository;
     @Autowired
-    public ObjectiveController(ObjectiveRepository objectiveRepository){
+    public ObjectiveController(ObjectiveRepository objectiveRepository, CategoryRepository categoryRepository){
         this.objectiveRepository = objectiveRepository;
+        this.categoryRepository = categoryRepository;
     }
 
     @GetMapping
@@ -34,6 +38,17 @@ public class ObjectiveController {
 
     @PostMapping
     public void create(@RequestBody Objective objective){
+        objectiveRepository.save(objective);
+    }
+
+    @PostMapping("/{id}")
+    public void createWithCategory(@RequestBody Objective objective, @PathVariable int id){
+        objectiveRepository.save(objective);
+        Category category = categoryRepository.findOne(id);
+                if(category == null) {
+            throw new RuntimeException("category not found");
+                }
+                objective.setCategory(category);
         objectiveRepository.save(objective);
     }
 

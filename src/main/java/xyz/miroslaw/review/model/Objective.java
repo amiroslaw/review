@@ -1,28 +1,39 @@
 package xyz.miroslaw.review.model;
 
+import com.fasterxml.jackson.annotation.JsonBackReference;
 import org.hibernate.validator.constraints.NotEmpty;
 
-import javax.persistence.Entity;
-import javax.persistence.Id;
+import javax.persistence.*;
 import java.util.Date;
 
 @Entity
 public class Objective {
     @Id
+    @GeneratedValue
     private int id;
     @NotEmpty
     private String name;
-    @NotEmpty
     private int duration;
     private Date date;
+    @Column(columnDefinition = "TEXT")
     private String comment;
+    @JsonBackReference
+    @ManyToOne
+//    @JoinColumn(name = "category_id")
+    private Category category;
 
-    public Objective(int id, String name, int duration, Date date, String comment) {
-        this.id = id;
+    // private constructor needed by JPA
+    public  Objective(){};
+
+    public Objective(String name, int duration, Date date, String comment) {
         this.name = name;
         this.duration = duration;
         this.date = date;
         this.comment = comment;
+    }
+    public Objective(String name, int duration, Date date, String comment, Category category) {
+        this(name, duration, date, comment);
+        this.category = category;
     }
 
     public int getId() {
@@ -63,5 +74,13 @@ public class Objective {
 
     public void setComment(String comment) {
         this.comment = comment;
+    }
+
+    public Category getCategory() {
+        return category;
+    }
+
+    public void setCategory(Category category) {
+        this.category = category;
     }
 }

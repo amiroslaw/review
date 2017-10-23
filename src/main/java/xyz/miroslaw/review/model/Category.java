@@ -1,6 +1,10 @@
 package xyz.miroslaw.review.model;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.fasterxml.jackson.annotation.JsonManagedReference;
+
 import javax.persistence.Entity;
+import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
 import javax.persistence.OneToMany;
 import java.util.List;
@@ -9,14 +13,21 @@ import java.util.List;
 public class Category {
 
     @Id
+    @GeneratedValue
     private int id;
     private String name;
-    @OneToMany
+    @JsonManagedReference
+    @OneToMany(mappedBy = "category")
     private List<Objective> objectives;
 
-    public Category(int id, String name) {
-        this.id = id;
+    public Category(){}
+
+    public Category(String name) {
         this.name = name;
+    }
+    public Category(String name, List<Objective> objectives) {
+        this.name = name;
+        this.objectives = objectives;
     }
 
     public int getId() {
