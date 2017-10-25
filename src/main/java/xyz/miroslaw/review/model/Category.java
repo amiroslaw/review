@@ -2,6 +2,7 @@ package xyz.miroslaw.review.model;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonManagedReference;
+import org.hibernate.validator.constraints.NotEmpty;
 
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
@@ -15,19 +16,20 @@ public class Category {
     @Id
     @GeneratedValue
     private int id;
+    @NotEmpty
     private String name;
-    @JsonManagedReference
+    @JsonIgnore
     @OneToMany(mappedBy = "category")
-    private List<Objective> objectives;
+    private List<Task> tasks;
 
     public Category(){}
 
     public Category(String name) {
         this.name = name;
     }
-    public Category(String name, List<Objective> objectives) {
+    public Category(String name, List<Task> tasks) {
         this.name = name;
-        this.objectives = objectives;
+        this.tasks = tasks;
     }
 
     public int getId() {
@@ -46,11 +48,11 @@ public class Category {
         this.name = name;
     }
 
-    public List<Objective> getObjectives() {
-        return objectives;
+    public List<Task> getTasks() {
+        return tasks;
     }
 
-    public void setObjectives(List<Objective> objectives) {
-        this.objectives = objectives;
+    public void setTasks(List<Task> tasks) {
+        this.tasks = tasks;
     }
 }

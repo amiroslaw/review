@@ -1,10 +1,10 @@
 package xyz.miroslaw.review.model;
 
-import com.fasterxml.jackson.annotation.JsonBackReference;
 import org.hibernate.validator.constraints.NotEmpty;
 
 import javax.persistence.*;
 import java.util.Date;
+import java.util.List;
 
 @Entity
 public class Objective {
@@ -12,28 +12,29 @@ public class Objective {
     @GeneratedValue
     private int id;
     @NotEmpty
-    private String name;
-    private int duration;
     private Date date;
+    @NotEmpty
+    private float totalDuration;
+    @Column(columnDefinition = "TEXT")
+    private String success;
+    @Column(columnDefinition = "TEXT")
+    private String failure;
     @Column(columnDefinition = "TEXT")
     private String comment;
-    @JsonBackReference
-    @ManyToOne
-//    @JoinColumn(name = "category_id")
-    private Category category;
+    @OneToMany(mappedBy = "objective", cascade = CascadeType.REMOVE)
+    private List<Task> tasks;
 
-    // private constructor needed by JPA
     public  Objective(){};
-
-    public Objective(String name, int duration, Date date, String comment) {
-        this.name = name;
-        this.duration = duration;
+    public Objective(Date date, float totalDuration, String success, String failure, String comment) {
         this.date = date;
+        this.totalDuration = totalDuration;
+        this.success = success;
+        this.failure = failure;
         this.comment = comment;
     }
-    public Objective(String name, int duration, Date date, String comment, Category category) {
-        this(name, duration, date, comment);
-        this.category = category;
+    public Objective(Date date, float totalDuration,  String success, String failure, String comment, List<Task> tasks) {
+        this(date, totalDuration, success, failure, comment);
+        this.tasks = tasks;
     }
 
     public int getId() {
@@ -44,22 +45,6 @@ public class Objective {
         this.id = id;
     }
 
-    public String getName() {
-        return name;
-    }
-
-    public void setName(String name) {
-        this.name = name;
-    }
-
-    public int getDuration() {
-        return duration;
-    }
-
-    public void setDuration(int duration) {
-        this.duration = duration;
-    }
-
     public Date getDate() {
         return date;
     }
@@ -68,6 +53,13 @@ public class Objective {
         this.date = date;
     }
 
+    public float getTotalDuration() {
+        return totalDuration;
+    }
+
+    public void setTotalDuration(float totalDuration) {
+        this.totalDuration = totalDuration;
+    }
     public String getComment() {
         return comment;
     }
@@ -76,11 +68,27 @@ public class Objective {
         this.comment = comment;
     }
 
-    public Category getCategory() {
-        return category;
+    public String getSuccess() {
+        return success;
     }
 
-    public void setCategory(Category category) {
-        this.category = category;
+    public void setSuccess(String success) {
+        this.success = success;
+    }
+
+    public String getFailure() {
+        return failure;
+    }
+
+    public void setFailure(String failure) {
+        this.failure = failure;
+    }
+
+    public List<Task> getTasks() {
+        return tasks;
+    }
+
+    public void setTasks(List<Task> tasks) {
+        this.tasks = tasks;
     }
 }

@@ -3,9 +3,11 @@ package xyz.miroslaw.review.controller;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 import xyz.miroslaw.review.model.Category;
+import xyz.miroslaw.review.model.Task;
 import xyz.miroslaw.review.repository.CategoryRepository;
 import xyz.miroslaw.review.repository.ObjectiveRepository;
 import xyz.miroslaw.review.model.Objective;
+import xyz.miroslaw.review.repository.TaskRepository;
 
 import java.util.List;
 
@@ -14,46 +16,36 @@ import java.util.List;
 public class ObjectiveController {
 
     private ObjectiveRepository objectiveRepository;
-    private CategoryRepository categoryRepository;
+    private TaskRepository taskRepository;
+
+
     @Autowired
-    public ObjectiveController(ObjectiveRepository objectiveRepository, CategoryRepository categoryRepository){
+    public ObjectiveController(ObjectiveRepository objectiveRepository, TaskRepository taskRepository) {
         this.objectiveRepository = objectiveRepository;
-        this.categoryRepository = categoryRepository;
+        this.taskRepository = taskRepository;
     }
 
     @GetMapping
-    public Iterable<Objective> getAllObjectives(){
+    public Iterable<Objective> getAllObjectives() {
         return objectiveRepository.findAll();
     }
 
     @GetMapping("{id}")
-    public Objective getObjective(@PathVariable int id){
+    public Objective getObjective(@PathVariable int id) {
         return objectiveRepository.findOne(id);
     }
 
-    @GetMapping("/name/{name}")
-    public List<Objective> findObjectiveByName(@PathVariable String name){
-        return objectiveRepository.findByName(name);
-    }
-
     @PostMapping
-    public void create(@RequestBody Objective objective){
+    public void createObjective(@RequestBody Objective objective) {
         objectiveRepository.save(objective);
-    }
-
-    @PostMapping("/{id}")
-    public void createWithCategory(@RequestBody Objective objective, @PathVariable int id){
-        objectiveRepository.save(objective);
-        Category category = categoryRepository.findOne(id);
-                if(category == null) {
-            throw new RuntimeException("category not found");
-                }
-                objective.setCategory(category);
-        objectiveRepository.save(objective);
+        objective.getTasks().forEach(e -> {
+            e.setObjective(objective);
+            taskRepository.save(e);
+        });
     }
 
     @PutMapping("/{id}")
-    public void update(@RequestBody Objective objective, @PathVariable int id){
+    public void updateObjective(@RequestBody Objective objective, @PathVariable int id) {
         if (objective.getId() != id) {
             throw new RuntimeException("mismatch id");
         }
@@ -65,12 +57,28 @@ public class ObjectiveController {
     }
 
     @DeleteMapping("/{id}")
-    public void delete(@PathVariable int id){
-        Objective old = objectiveRepository.findOne(id);
-        if (old == null) {
+    public void deleteObjective(@PathVariable int id) {
+        Objective objective = objectiveRepository.findOne(id);
+        if (objective == null) {
             throw new RuntimeException("objective not found");
         }
-        objectiveRepository.delete(id);
+        objectiveRepository.delete(objective);
     }
+
+    @GetMapping("/{objectiveId}/tasks")
+    public Iterable<Task> getTasksByObjective(@PathVariable int objectiveId) {
+        Objective objective = objectiveRepository.findOne(objectiveId);
+        if (objective == null) throw new RuntimeException("objective not found");
+        return taskRepository.findAllByObjective(objective);
+    }
+
+    @PostMapping("/{objectiveId}/tasks")
+    public void createTask(@RequestBody Task task, @PathVariable int objectiveId) {
+        Objective objective = objectiveRepository.findOne(objectiveId);
+        if (objective == null) throw new RuntimeException("objective not found");
+        task.setObjective(objective);
+        taskRepository.save(task);
+    }
+
 
 }
