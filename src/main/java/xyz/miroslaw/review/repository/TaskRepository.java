@@ -10,5 +10,6 @@ import java.util.List;
 @Repository
 public interface TaskRepository extends CrudRepository<Task, Integer> {
     List<Task> findByName(String name);
+
     List<Task> findAllByObjective(Objective objective); //or by int id
 }

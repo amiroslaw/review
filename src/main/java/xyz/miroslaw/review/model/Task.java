@@ -3,7 +3,11 @@ package xyz.miroslaw.review.model;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import org.hibernate.validator.constraints.NotEmpty;
 
-import javax.persistence.*;
+import javax.persistence.Entity;
+import javax.persistence.GeneratedValue;
+import javax.persistence.Id;
+import javax.persistence.ManyToOne;
+import javax.validation.constraints.NotNull;
 
 @Entity
 public class Task {
@@ -12,7 +16,7 @@ public class Task {
     private int id;
     @NotEmpty
     private String name;
-    @NotEmpty
+    @NotNull
     private float duration;
     @ManyToOne
     private Category category;
@@ -20,16 +24,19 @@ public class Task {
     @ManyToOne
     private Objective objective;
 
-    public Task(){};
-    public Task(String name, float duration){
+    public Task() {
+    }
+
+    public Task(String name, float duration) {
         this.name = name;
         this.duration = duration;
-    };
-    public Task(String name, float duration, Category category, Objective objective){
+    }
+
+    public Task(String name, float duration, Category category, Objective objective) {
         this(name, duration);
         this.category = category;
         this.objective = objective;
-    };
+    }
 
     public int getId() {
         return id;

@@ -1,7 +1,6 @@
 package xyz.miroslaw.review.model;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
-import com.fasterxml.jackson.annotation.JsonManagedReference;
 import org.hibernate.validator.constraints.NotEmpty;
 
 import javax.persistence.Entity;
@@ -22,11 +21,13 @@ public class Category {
     @OneToMany(mappedBy = "category")
     private List<Task> tasks;
 
-    public Category(){}
+    public Category() {
+    }
 
     public Category(String name) {
         this.name = name;
     }
+
     public Category(String name, List<Task> tasks) {
         this.name = name;
         this.tasks = tasks;

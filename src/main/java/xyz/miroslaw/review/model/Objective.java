@@ -1,8 +1,9 @@
 package xyz.miroslaw.review.model;
 
-import org.hibernate.validator.constraints.NotEmpty;
+
 
 import javax.persistence.*;
+import javax.validation.constraints.NotNull;
 import java.util.Date;
 import java.util.List;
 
@@ -11,9 +12,8 @@ public class Objective {
     @Id
     @GeneratedValue
     private int id;
-    @NotEmpty
+    @NotNull
     private Date date;
-    @NotEmpty
     private float totalDuration;
     @Column(columnDefinition = "TEXT")
     private String success;
@@ -24,7 +24,7 @@ public class Objective {
     @OneToMany(mappedBy = "objective", cascade = CascadeType.REMOVE)
     private List<Task> tasks;
 
-    public  Objective(){};
+    Objective(){}
     public Objective(Date date, float totalDuration, String success, String failure, String comment) {
         this.date = date;
         this.totalDuration = totalDuration;
@@ -32,7 +32,8 @@ public class Objective {
         this.failure = failure;
         this.comment = comment;
     }
-    public Objective(Date date, float totalDuration,  String success, String failure, String comment, List<Task> tasks) {
+
+    public Objective(Date date, float totalDuration, String success, String failure, String comment, List<Task> tasks) {
         this(date, totalDuration, success, failure, comment);
         this.tasks = tasks;
     }
@@ -60,6 +61,7 @@ public class Objective {
     public void setTotalDuration(float totalDuration) {
         this.totalDuration = totalDuration;
     }
+
     public String getComment() {
         return comment;
     }

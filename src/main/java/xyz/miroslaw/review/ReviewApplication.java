@@ -15,6 +15,7 @@ import xyz.miroslaw.review.repository.CategoryRepository;
 import xyz.miroslaw.review.repository.ObjectiveRepository;
 import xyz.miroslaw.review.repository.TaskRepository;
 
+import java.math.BigDecimal;
 import java.sql.Date;
 import java.time.LocalDate;
 import java.util.Arrays;
@@ -51,7 +52,7 @@ public class DataLoader implements ApplicationRunner {
 		categoryRepository.save(category);
 		LocalDate localDate= LocalDate.of(2017,10,22);
 		Date date = Date.valueOf(localDate);
-		Objective ob =  new Objective(date, 52, "main task", "forex", "comment");
+		Objective ob =  new Objective(date, 52.6f, "main task", "forex", "comment");
 		objectiveRepository.save(ob);
 		List<Task> tasks = Arrays.asList(
 				new Task("project", 12, category, ob),
